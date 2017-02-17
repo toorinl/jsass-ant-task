@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-jsass" basedir="." default="build" xmlns:if="ant:if" xmlns:unless="ant:unless" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property name="ivy.lib.dir" value="${basedir}/lib" />
+	<property name="ivy.dep.file" value="${basedir}/ivy.xml" />
+	<path id="ivy.lib.path">
+		<fileset dir="apache-ivy-2.4.0" includes="*.jar" />
+	</path>
+
+	<target name="init">
+		<!-- Set up Ivy -->
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+	</target>
+
+	<target name="resolve" depends="init" description="Resolve dependencies">
+		<mkdir dir="lib"/>
+		<ivy:retrieve conf="runtime" pattern="lib/[artifact](-[classifier])-[revision].[ext]" />
+	</target>
+
+	<target name="clean"  description="Clears output files">
+		<!-- delete binary files -->
+			<delete dir="bin"/>
+	</target>
+
+	<target name="build" description="Build the java source codes">
+			<mkdir dir="bin"/>
+			<javac encoding="UTF-8" destdir="bin" includeantruntime="true">
+					<src path="src"/>
+					<classpath>
+						<fileset dir=".">
+								<include name="lib/*.jar"/>
+						</fileset>
+					</classpath>
+			</javac>
+	</target>
+
+	
+	<target name="make" description="Makes the JAR file">
+		<jar destfile="ant-jsass.jar">
+				<manifest>
+					<attribute name="Built-By" value="${user.name}"/>
+					<attribute name="Implementation-Vendor" value="Toori NL"/>
+				</manifest>
+			<fileset dir="bin"/>
+			<fileset dir="src" includes="sass.tasks"/>
+		</jar>
+	</target>
+
+	<!-- Test to see it works -->
+	<target name="test" description="SASS/SCSS compile task">
+		<taskdef resource="sass.tasks">
+			<classpath path="ant-jsass.jar"/>
+			<classpath path="lib/jsass-5.4.3.jar"/>
+			<classpath path="lib/slf4j-api-1.7.21.jar"/>
+			<classpath path="lib/slf4j-simple-1.7.21.jar"/>
+			<classpath path="lib/commons-io-2.5.jar"/>
+			<classpath path="lib/commons-lang3-3.5.jar"/>
+		</taskdef>
+		<fileset id="the_files" dir="test">
+			<include name="sample.scss"/>
+			<include name="sample2.sass"/>
+		</fileset>
+		<dirset id="the_includes" dir="test" includes="includes2"/>
+		<!-- expanded results -->
+		<jsass todir="test-output" outputStyle="EXPANDED">
+			<fileset refid="the_files"/>
+			<includePaths refid="the_includes"/>
+			<mapper>
+				<globmapper from="*.scss" to="*.expanded.css"/>
+				<globmapper from="*.sass" to="*.expanded.css"/>
+			</mapper>
+		</jsass>
+		<!-- compressed results -->
+		<jsass todir="test-output" outputStyle="COMPRESSED">
+			<fileset refid="the_files"/>
+			<includePaths refid="the_includes"/>
+			<mapper>
+				<globmapper from="*.scss" to="*.css"/>
+				<globmapper from="*.sass" to="*.css"/>
+			</mapper>
+		</jsass>
+	</target>
+
+</project>

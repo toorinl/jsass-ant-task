@@ -1,0 +1,15 @@
+$blue: #0000cc;
+$red: #cc0000;
+
+@import 'green-and-white.scss';
+@import 'included.scss';
+
+div.area1 {
+  color: $blue;
+  .section2 {
+    font-style:italic;
+    background-color: $red;
+    color:$white;
+    font-weight:$myvar;
+  }
+}

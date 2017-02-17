@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0">
+    <info organisation="nl.toori" module="SassAntTask"/>
+    <configurations defaultconf="runtime->default;sources->sources">
+    	<conf name="compile" />
+  		<conf name="runtime" />
+  		<conf name="sources"/>
+    </configurations>
+    <dependencies>
+		<!-- https://mvnrepository.com/artifact/io.bit3/jsass -->
+		<dependency org="io.bit3" name="jsass" rev="5.4.3"/>
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+    <dependency org="org.slf4j" name="slf4j-simple" rev="1.7.21"/>
+
+    </dependencies>
+</ivy-module>
